@@ -1,0 +1,77 @@
+<table class="table fs--1 mt-3">
+    <tbody>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Reference No</td>
+            <td>{{ property.reference_no }}</td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Title</td>
+            <td>{{ property.title }}</td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Area Size</td>
+            <td>{{ property.size }} sqft</td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Price</td>
+            <td>
+                <span class="badge badge-soft-warning fs-1">
+                    {{ property.price }} <i class="fa-solid fa-bangladeshi-taka-sign ms-1"></i>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Beds</td>
+            <td>{{ property.bed }}</td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Bath</td>
+            <td>{{ property.bath }}</td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Purpose</td>
+            <td>{{ property.property_purpose }}</td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Type</td>
+            <td>{{ property.property_type }}</td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Sub Type</td>
+            <td>{{ property.property_sub_type }}</td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Features</td>
+            <td>
+                {% if property.property_features %}
+                    {% for feature in property.property_features.all %}
+                        <span class="badge badge-soft-dark me-2 fs--2 mb-2">{{feature.features_type}}</span>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-100" style="width: 30%;">Keywords</td>
+            <td>
+                {% for keyword in property.keywords %}
+                <span class="badge bg-primary m-1 p-1 fs--1">{{ keyword }}</span>
+                {% endfor %}
+            </td>
+        </tr>
+        <!-- <tr>
+            <td class="bg-100" style="width: 30%;">Floor Plans</td>
+            <td>
+                <div class="position-relative h-sm-100">
+                    {% if property.floor_plans %}
+                    <a href="{{property.floor_plans.url}}" data-gallery="gallery-2">
+                        <img class="img-fluid rounded" src="{{property.floor_plans.url}}" alt="" width="300" />
+                    </a>
+                    {% else %}
+                        <span class="text-danger">Not Uploded!</span>
+                    {% endif %}
+                </div>
+            </td>
+        </tr> -->
+        
+    </tbody>
+</table>

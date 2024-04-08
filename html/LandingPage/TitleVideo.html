@@ -1,0 +1,131 @@
+{% extends 'layouts/master.html' %}
+
+{% load static %}
+
+{% block title %}
+AddressPMS | Title Video
+{% endblock title %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+<style>
+    .action li {
+        display: inline;
+    }
+
+    .action li a {
+        color: #fff;
+        display: inline-block;
+        font-size: 14px;
+        margin-right: 5px;
+        line-height: 1.5;
+        border-radius: 3px;
+        transition: all 0.3s ease;
+    }
+
+    /* table {
+        text-align: center;
+    } */
+    table th {
+        font-size: 15px;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<div class="row mb-3">
+  <div class="col-md-10">
+    <div class="card h-100">
+      <!-- <div class="bg-holder bg-card" 
+        style="background-image:url(/static/assets/img/icons/spot-illustrations/corner-1.png);">
+        </div> -->
+
+      <div class="bg-holder bg-card"
+        style="background-image:url({% static 'assets/img/icons/spot-illustrations/corner-3.png' %});">
+      </div>
+      <!--/.bg-holder-->
+
+      <div class="card-header z-index-1">
+        <div class="d-flex " style="justify-content: space-between;">
+          <h5 class="text-primary mb-3">{{ video_obj.title }}</h5>
+          <h5>
+            <a class="btn btn-konnect-default btn-sm" type="button" data-bs-toggle="modal"
+              data-bs-target="#update-modal-{{video_obj.id}}">
+              <span class="d-none d-sm-inline-block">
+                <i class="fa-solid fa-pen-to-square me-1"></i>
+                Update
+              </span>
+            </a>
+          </h5>
+        </div>
+
+        <div class="mt-5" style="min-height: 500px;">
+            <h5 class="text-600">Video:</h5>
+            {% if video_obj.video %}
+                <figure class="figure">
+                    <img class="figure-img img-fluid rounded" src="{{video_obj.video.url}}" alt="Your GIF" />
+                    <!-- <figcaption class="figure-caption">A caption for the above image.</figcaption> -->
+                </figure>
+            {% else %}
+                <span class="badge badge-soft-danger fs-1 ms-3 mt-3">Not Uploded!</span>
+            {% endif %}
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- AreaImage Update Modal -->
+<div class="modal fade" id="update-modal-{{video_obj.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 400px">
+    <div class="modal-content position-relative">
+      <div class="position-absolute top-0 end-0 mt-2 me-2 z-index-1">
+        <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body p-0">
+          <div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
+            <h4 class="mb-1" id="modalExampleDemoLabel">Update Title Video</h4>
+          </div>
+          <div class="p-4 pb-0">
+
+            <div class="mb-3">
+              <label class="col-form-label" for="title">Title:</label>
+              <input class="form-control" id="title" type="text" value="{{ video_obj.title }}" name="title" required />
+            </div>
+            <div class="mb-3">
+                <label class="col-form-label" for="description">
+                    Video:
+                    <span class="fs--2 ms-1 text-primary" data-bs-toggle="tooltip" 
+                        data-bs-placement="top" title="Only Can Uplode .gif file.">
+                        <span class="fas fa-question-circle"></span>
+                    </span>
+                </label>
+                <input class="form-control" id="video" type="file" name="video" accept=".gif" required />
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-primary" type="submit" name="title_video_update">Update</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+{% endblock content %}

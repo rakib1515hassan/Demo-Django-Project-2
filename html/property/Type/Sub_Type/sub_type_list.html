@@ -1,0 +1,361 @@
+{% extends 'layouts/master.html' %}
+{% load static %}
+
+{% block title %}
+Address PMS | Property Subtype
+{% endblock title %}
+
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+<style>
+    .action li {
+        display: inline;
+    }
+
+    .action li a {
+        color: #fff;
+        display: inline-block;
+        font-size: 14px;
+        margin-right: 5px;
+        line-height: 1.5;
+        border-radius: 3px;
+        transition: all 0.3s ease;
+    }
+
+    /* table {
+            text-align: center;
+        } */
+    table th {
+        font-size: 15px;
+    }
+
+    li .page {
+        background-color: #d9dce0 !important;
+        color: #0b0b0b !important;
+    }
+
+    li.active .page {
+        background-color: #2c7be5 !important;
+        color: #efeff5 !important;
+    }
+
+    .page {
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+    }
+
+    .btn-falcon-default .page {
+        color: var(--falcon-btn-falcon-default-color);
+        background-color: var(--falcon-btn-falcon-background);
+        border-color: var(--falcon-btn-falcon-background);
+        -webkit-box-shadow: var(--falcon-btn-falcon-box-shadow);
+        box-shadow: var(--falcon-btn-falcon-box-shadow);
+    }
+
+</style>
+{% endblock styles %}
+
+
+{% block content %}
+<div class="card mb-3">
+
+    <div class="card-header bg-light">
+        <div class="row flex-between-center">
+            <div class="col-4 col-sm-auto d-flex align-items-center pe-0">
+                <h5 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">
+                    <i class="fa-solid fa-shop me-2"></i>
+                    <span class="badge badge-soft-dark fs-1">{{property_type.type}}</span>
+                    Sub-Type's
+                </h5>
+            </div>
+            <div class="col-8 col-sm-auto ms-auto text-end ps-0">
+                <div id="orders-actions">
+                    <a class="btn btn-konnect-default btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#add-subtype-modal">
+                        <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
+                        <span class="d-none d-sm-inline-block ms-1">Create</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card-body p-4">
+
+        <div class="table-responsive">
+
+            <div>
+                <form class="d-flex justify-content-between mb-3">
+                    <div class="col-md-6">
+                        <!-- <p>Show
+                            <select aria-label="Default select example" name="products_per_page">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            entries
+                        </p> -->
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="search" placeholder="Search..." aria-label="Search"
+                                value="{{ request.GET.search }}">
+                            <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <table width="100%" class="table table-bordered table-striped fs--1 mb-0">
+                <thead class="bg-200 text-900">
+                    <tr>
+                        <th>No</th>
+                        <th>Propery Sub Type</th>
+                        <th>Logo</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th class="text-center" width="200">Actions</th>
+                    </tr>
+                </thead>
+
+                {% for subtype in page_obj %}
+                <tr>
+                    <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                    <td>{{subtype.sub_type}}</td>
+                    <td>
+                        {% if subtype.logo %}
+                            <a href="{{subtype.logo.url}}" data-gallery="gallery-2">
+                                <img src="{{subtype.logo.url}}" alt="" width="100" height="100"/>
+                            </a>
+                        {% else %}
+                        <span class="badge badge-soft-danger fs--2">No Image!</span>
+                        {% endif %}
+                    </td>
+                    <td>{{subtype.created_at|date:"d-M-Y"}}</td>
+                    <td>{{subtype.updated_at|date:"d-M-Y"}}</td>
+                    
+                    <td>
+                        <ul class="action text-center p-0">
+                            <li>
+                                <a class="text-primary me-3" data-bs-toggle="modal" 
+                                    data-bs-target="#update-subtype-modal-{{forloop.counter}}">
+                                    <span class="fas fa-edit text-warning" data-fa-transform="grow-2"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="text-danger cursor-pointer" data-bs-toggle="modal" 
+                                    data-bs-target="#delete-subtype-modal-{{forloop.counter}}">
+                                    <span class="fas fa-trash text-danger" data-fa-transform="grow-2"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Pagination snd Counting -->
+    <div class="card-footer bg-light">
+        <div class="row justify-content-between">
+
+            <!-- Counting -->
+            <div class="col-md-6 ms-3">
+                <strong>Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} out of {{ products_count }}</strong>
+                <!-- <h5>{{page_range}}</h5> -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="col-md-2 me-3">
+                <nav aria-label="Page navigation example">
+                    {% if page_obj.has_other_pages %}
+                        <div class="d-flex align-items-center justify-content-end">
+            
+                            {% if page_obj.has_previous %}
+                                <a class="btn btn-sm btn-falcon-default me-1" title="Previous" href="?page={{ page_obj.previous_page_number }}">
+                                    <span class="fas fa-chevron-left"></span>
+                                </a>
+                            {% else %}
+                                <button class="btn btn-sm btn-falcon-default me-1" title="Previous" data-list-pagination="prev" disabled>
+                                    <span class="fas fa-chevron-left"></span>
+                                </button>
+                            {% endif %}
+            
+                            <ul class="pagination mb-0">
+                                {% for i in page_range %}
+                                    <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                                        <a class="btn btn-sm btn-falcon-default me-1 mb-1 page" href="?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+            
+                            {% if page_obj.has_next %}
+                                <a class="btn btn-sm btn-falcon-default ms-1" title="Next" href="?page={{ page_obj.next_page_number }}">
+                                    <span class="fas fa-chevron-right"></span>
+                                </a>
+                            {% else %}
+                                <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Next" data-list-pagination="next" disabled>
+                                    <span class="fas fa-chevron-right"></span>
+                                </button>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </nav>
+            </div>
+            
+            
+        </div>
+    </div>
+
+</div>
+
+<!-- Sub Type Create -->
+<div class="modal fade" id="add-subtype-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+      <div class="modal-content position-relative">
+        <div class="position-absolute top-0 end-0 mt-2 me-2 z-index-1">
+          <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+           {% csrf_token %}
+            <div class="modal-body p-0">
+                <div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
+                    <h4 class="mb-1" id="modalExampleDemoLabel">Add a new Sub-Type </h4>
+                </div>
+                <div class="p-4 pb-0">
+                    
+                    <div class="mb-3">
+                        <label class="col-form-label" for="sub_type">Property Type:</label>
+                        <input class="form-control" type="text" value="{{property_type.type}}" disabled/>
+                        <input class="form-control" id="sub_type" name="property_type" type="hidden" value="{{property_type.id}}"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="col-form-label" for="recipient-name">Sub Type:</label>
+                        <input class="form-control" id="recipient-name" type="text" name="sub_type" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="col-form-label" for="recipient-name">Logo:</label>
+                        <input class="form-control" id="recipient-name" type="file" name="logo" required />
+                    </div>
+                    
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary" type="submit" name="create_subtype">Save</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+
+
+<!-- Sub Type Update -->
+{% for subtype in page_obj %}
+<div class="modal fade" id="update-subtype-modal-{{forloop.counter}}" tabindex="-1" 
+     role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+      <div class="modal-content position-relative">
+        <div class="position-absolute top-0 end-0 mt-2 me-2 z-index-1">
+          <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+           {% csrf_token %}
+            <div class="modal-body p-0">
+                <div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
+                    <h4 class="mb-1" id="modalExampleDemoLabel">Update Sub-Type </h4>
+                </div>
+                <div class="p-4 pb-0">
+                    
+                    <div class="mb-3">
+                        <label class="col-form-label" for="sub_type">Property Type:</label>
+                        <input class="form-control" type="text" value="{{property_type.type}}" disabled/>
+                        <input name="property_type" type="hidden" value="{{property_type.id}}"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="col-form-label" for="recipient-name">Sub Type:</label>
+                        <input class="form-control" id="recipient-name" type="text" name="sub_type" value="{{subtype.sub_type}}" required />
+                        
+                        <input type="hidden" name="sub_type_id" value="{{subtype.id}}" />
+                        
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="col-form-label" for="recipient-name">Logo:</h6>
+                        {% if subtype.logo %}
+                            <a href="{{subtype.logo.url}}" data-gallery="gallery-2">
+                                <img class="ms-5" src="{{subtype.logo.url}}" alt="" width="100" height="100"/>
+                            </a>
+                        {% endif %}
+                        <input class="form-control mt-2" id="recipient-name" type="file" name="logo" />
+                    </div>
+                    
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary" type="submit" name="update_subtype">Save</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+{% endfor %}
+
+
+<!-- Sub Tyoe Delete -->
+{% for subtype in page_obj %}
+<div class="modal fade" id="delete-subtype-modal-{{forloop.counter}}" tabindex="-1" 
+     role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 400px">
+      <div class="modal-content position-relative">
+        <div class="position-absolute top-0 end-0 mt-2 me-2 z-index-1">
+          <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="modal-body p-0">
+                <div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
+                  <h4 class="mb-1" id="modalExampleDemoLabel">Delete Conformation</h4>
+                </div>
+                <div class="p-4 pb-0">
+                  
+                    <div class="alert alert-danger border-2 d-flex align-items-center" role="alert">
+                        <div class="bg-danger me-3 icon-item"><span class="fas fa-times-circle text-white fs-3"></span></div>
+                        <p class="mb-0">Are you sure to delete 
+                            <strong>{{subtype.sub_type}}</strong>?
+                        </p>
+                        <input type="hidden" name="delete_subtype_id" value="{{subtype.id}}">
+                    </div>
+
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-xmark me-2"></i>No
+                </button>
+                <button class="btn btn-danger" type="submit" name="delete_subtype">
+                    <span class="fas fa-trash me-2"></span>Yes
+                </button>
+              </div>
+        </form>
+      </div>
+    </div>
+</div>
+{% endfor %}
+
+
+{% endblock content %}

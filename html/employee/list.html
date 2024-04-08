@@ -1,0 +1,213 @@
+{% extends 'layouts/master.html' %}
+
+{% load static %}
+
+{% block title %}
+Employee List
+{% endblock title %}
+
+
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+<!-- For TIme Modiul -->
+<link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" />
+{% endblock styles %}
+
+
+
+
+{% block content %}
+<div class="card mb-3">
+
+    <!-- Header Content -->
+    <div class="card-header bg-light">
+        <div class="row flex-between-center">
+            <div class="col-4 col-sm-auto d-flex align-items-center pe-0">
+                <h5 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">
+                    <span class="fas fa-user-friends fs-1 me-2"></span>Employee List
+                </h5>
+            </div>
+            <div class="col-8 col-sm-auto ms-auto text-end ps-0">
+                <div class="d-none" id="orders-bulk-actions">
+                    <div class="d-flex"><select class="form-select form-select-sm" aria-label="Bulk actions">
+                            <option selected="">Bulk actions</option>
+                            <option value="Refund">Refund</option>
+                            <option value="Delete">Delete</option>
+                            <option value="Archive">Archive</option>
+                        </select>
+                        <button class="btn btn-konnect-default btn-sm ms-2" type="button">Apply</button>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-row" id="orders-actions">
+                    <a href="{% url 'employee:employee_create' %}" class="btn btn-konnect-default btn-sm" type="button">
+                        <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
+                        <span class="d-none d-sm-inline-block ms-1">New</span>
+                    </a>
+                    <button class="btn btn-konnect-default btn-sm mx-2" type="button" 
+                        data-bs-toggle="modal" data-bs-target="#filter-modal">
+                        <span class="fas fa-filter"></span>
+                        <span class="d-none d-sm-inline-block ms-1">Filter</span>
+                    </button>
+                    <!-- <form method="get">
+                        <button class="btn btn-konnect-default btn-sm" type="submit" name="export">
+                            <span class="fas fa-external-link-alt"></span>
+                            <span class="d-none d-sm-inline-block ms-1">Export All</span>
+                        </button>
+                    </form> -->
+                    <button class="btn btn-konnect-default btn-sm" type="button"
+                        data-bs-toggle="modal" data-bs-target="#export-all-data">
+                        <span class="fas fa-external-link-alt"></span>
+                        <span class="d-none d-sm-inline-block ms-1">Export All</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Body Content -->
+    <div class="card-body p-4">
+        <div class="table-responsive">
+
+            <div>
+                <form class="d-flex justify-content-between mb-3">
+                    <div class="col-md-6">
+                        <!-- <p>Show
+                            <select aria-label="Default select example" name="products_per_page">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            entries
+                        </p> -->
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="search" placeholder="Search..."
+                                aria-label="Search" value="{{ request.GET.search }}">
+                            <button class="btn btn-outline-secondary" type="submit"><i
+                                    class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <table width="100%" class="table table-bordered table-striped fs--1 mb-0">
+                <thead class="bg-200 text-900">
+                    <tr>
+                        <th>No</th>
+                        <th>Avatar</th>
+                        <th>Name/Gender</th>
+                        <th>Email/Phone</th>
+                        <th>Date of Birth</th>
+                        <th class="text-center">Created</th>
+                        <th class="text-center">Verified</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                {% for emp in page_obj %}
+                <tr>
+
+                    <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+
+                    <td>
+                        {% if emp.image %}
+                        <div class="avatar avatar-4xl">
+                            <a href="{{ emp.image.url }}" data-gallery="gallery-2">
+                                <img class="img-fluid rounded" src="{{ emp.image.url }}" alt="" width="300" />
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="avatar avatar-3xl">
+                            <a href="{% static 'assets/img/default.jpg' %}" data-gallery="gallery-2">
+                                <img class="img-fluid rounded" src="{% static 'assets/img/default.jpg' %}" alt=""
+                                    width="300" />
+                            </a>
+                        </div>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <span class="badge badge-soft-dark fs--1">{{ emp.name|capfirst }}</span><br>
+                        <span class="badge badge-soft-light fs--1">{{ emp.gender|capfirst }}</span>
+                    </td>
+
+                    <td>
+                        <span class="badge bg-light text-dark fs--2">{{ emp.email }}</span><br>
+                        <span class="badge bg-light text-dark fs--2">{{ emp.phone }}</span>
+                    </td>
+
+                    <td>
+                        <span class="badge bg-light text-dark fs--1">{{ emp.dob|date:"D, d/M/Y" }}</span><br>
+                        {% if emp.age %}
+                            <span class="badge bg-light text-dark fs--1">Age: {{emp.age}}</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center">
+                        <span class="badge badge-soft-light fs--2">
+                            {{ emp.created_at|date:"D, d/M/Y" }}
+                        </span><br>
+                        <span class="badge badge-soft-light fs--2">
+                            {{ emp.created_at|date:"g:i A" }}
+                        </span>
+                    </td>
+
+                    <td class="text-center">
+                        {% if emp.is_verified %}
+                        <i class="fa-solid fa-check text-success fs-3"></i>
+                        {% else %}
+                        <i class="fa-solid fa-xmark text-danger fs-3"></i>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <ul class="action text-center p-0">
+                            <li>
+                                <a class="text-primary me-2" href="">
+                                    <span class="fas fa-eye text-primary" data-fa-transform="grow-2"></span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="text-primary me-2" href="">
+                                    <span class="fas fa-edit text-warning" data-fa-transform="grow-2"></span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="text-danger cursor-pointer" data-bs-toggle="modal"
+                                    data-bs-target="#delete-{{emp.id}}">
+                                    <span class="fas fa-trash text-danger" data-fa-transform="grow-2"></span>
+                                </a>
+                            </li>
+                            <div class="text-start">
+                                <!-- Delete Modal -->
+                                {% include 'employee/delete.html' %}
+                            </div>
+                        </ul>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination snd Counting -->
+    {% include 'common/pagination.html' %}
+
+</div>
+
+
+
+<!-- Import Modal -->
+{% include 'common/export_data.html' %}
+
+
+{% endblock content %}

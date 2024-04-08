@@ -1,0 +1,160 @@
+{% extends 'layouts/master.html' %}
+
+{% load static %}
+
+{% block title %}
+AddressPMS | Footer
+{% endblock title %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+<style>
+  .action li {
+    display: inline;
+  }
+
+  .action li a {
+    color: #fff;
+    display: inline-block;
+    font-size: 14px;
+    margin-right: 5px;
+    line-height: 1.5;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  /* table {
+        text-align: center;
+    } */
+  table th {
+    font-size: 15px;
+  }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<div class="row mb-3">
+  <div class="col-md-10 col-lg-10 col-xxl-7">
+    <div class="card h-100">
+
+      <div class="bg-holder bg-card"
+        style="background-image:url({% static 'assets/img/icons/spot-illustrations/corner-1.png' %});">
+      </div>
+      <!--/.bg-holder-->
+
+      <div class="card-header z-index-1 bg-light">
+        <div class="d-flex" style="justify-content: space-between;">
+          <h4 class="text-primary mb-3">
+            <span class="fas fa-solid fa-dice me-2"></span>{{ footer_obj.name }}
+          </h4>
+          <h5>
+            <a class="btn btn-konnect-default btn-sm" href="{% url 'footer:footer-update' footer_obj.id %}">
+              <span class="d-none d-sm-inline-block">
+                <i class="fa-solid fa-pen-to-square me-1"></i>
+                Update
+              </span>
+            </a>
+          </h5>
+        </div>
+      </div>
+
+      <div class="card-body bg-light border-top mb-3">
+        <div class="row">
+            <div class="">
+                <table class="table table-bordered table-striped">
+                    <thead style="background: rgb(141, 134, 134); color: white;">
+                        <tr>
+                            <th class="col-4">Attribute</th>
+                            <th class="col-8">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-semi-bold">
+                              <i class="fa-brands fa-slack fs-1 me-2 text-primary"></i>Logo
+                            </td>
+                            <td>
+                              {% if footer_obj.logo %}
+                                <div class="avatar avatar-4xl">
+                                  <a href="{{footer_obj.logo.url}}" data-gallery="gallery-2">
+                                    <img class="img-fluid rounded" src="{{footer_obj.logo.url}}" alt="" width="300" />
+                                  </a>
+                                </div>
+                              {% else %}
+                                <span>Not Uploded!</span>
+                              {% endif %}
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td class="fw-semi-bold">
+                              <i class="fa-brands fa-square-facebook fs-1 me-2" style="color: #0866FF;"></i>Facebook Link
+                            </td>
+                            <td>{{ footer_obj.social_link.facebook|default:'' }}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="fw-semi-bold">
+                              <i class="fa-brands fa-youtube fs-1 me-2 text-danger"></i>Youtube Link
+                            </td>
+                            <td>{{ footer_obj.social_link.youtube|default:'' }}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="fw-semi-bold">
+                              <i class="fa-brands fa-twitter fs-1 me-2 text-primary"></i>Twitter Link
+                            </td>
+                            <td>{{ footer_obj.social_link.twitter|default:'' }}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="fw-semi-bold">
+                              <i class="fa-brands fa-instagram fs-1 me-2" style="color: #F7058B;"></i>Instagram Link
+                            </td>
+                            <td>{{ footer_obj.social_link.instagram|default:'' }}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="fw-semi-bold">
+                              <i class="fa-solid fa-file-waveform fs-1 me-2 text-primary"></i>Description
+                            </td>
+                            <td>{{ footer_obj.description|safe }}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="fw-semi-bold">
+                              <i class="fa-solid fa-address-card fs-1 me-2 text-primary"></i>Address
+                            </td>
+                            <td>{{ footer_obj.contact_us|safe }}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="fw-semi-bold">
+                              <i class="fa-solid fa-hourglass-start fs-1 me-2 text-primary"></i>Update at
+                            </td>
+                            <!-- <td>{{ footer_obj.updated_at|date:"D, M j, Y" }}</td> -->
+                            <td>
+                              {{ footer_obj.updated_at|date:"D, j/M/Y" }}, {{ footer_obj.updated_at|date:"g:i A" }}
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+{% endblock content %}

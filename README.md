@@ -1,4 +1,4 @@
-# Cardboard-Boxes-Project
+# Demo-Django-Project-2
 
 ## Description
 
